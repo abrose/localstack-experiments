@@ -3,7 +3,7 @@ version: '3.7'
 services:
     localstack:
         image: localstack/localstack:latest
-        container_name: localstack_test
+        container_name: localstack_main
         environment:
             - SERVICES=s3,sqs,sns,lambda,ecr
             - DEFAULT_REGION=eu-central-1
@@ -15,6 +15,7 @@ services:
             - DOCKER_HOST=unix:///var/run/docker.sock
 #            - AWS_CBOR_DISABLE=1
             - HOST_TMP_FOLDER=/tmp/localstack
+            - LAMBDA_DOCKER_NETWORK=localstack
         ports:
             - "8080:8080"
             - "53:53"
@@ -31,12 +32,12 @@ services:
             - localstack
         env_file:
             - .env
-    # test-lambda:
-    #     image: test-lambda:latest
-    #     build:
-    #         context: ./lambda/python-lambda
-    #     networks:
-    #         - localstack
+    test-lambda:
+        image: test_lambda:latest
+        build:
+            context: ./lambda/python-lambda
+        networks:
+            - localstack
 
 volumes:
     localstack: ~
